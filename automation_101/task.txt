@@ -1,0 +1,1 @@
+# Automate systemshut down by 05:30 pm if there is no user activity.
