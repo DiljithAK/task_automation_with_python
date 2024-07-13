@@ -3,31 +3,53 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formataddr
 
-try:
-    smtp = smtplib.SMTP('smtp.gmail.com', 587)
+# Email credentials and server configuration
+email = 'testsmtp@gmail.com'  # Your SMTP email address
+password = 'your-smtp-password'  # Your SMTP password
 
-    smtp.starttls()
+# List of recipient email addresses
+email_list = [
+    'receivermail1@gmail.com',
+    'receivermail2@gmail.com',
+    'receivermail3@gmail.com',
+    'receivermail4@gmail.com'
+]
 
-    smtp.login('diljithak07@gmail.com', 'rdhflbmzvjfopsmd')
+# Path to email template
+EMAIL_TEMPLATE = 'automation_103/email_content.html'
 
-    # message = "Hello world from Brevo SMTP Server"
-    # subject = "Your Subject Here"
-    # body = "Hello world from Brevo SMTP Server"
-    # message = f"Subject: {subject}\n\n{body}"
+# Load the email template
+def load_email_template(path):
+    try:
+        with open(path, 'r') as f:
+            return f.read()
+    except Exception as e:
+        print(f'Failed to read file: {e}')
 
-    msg = MIMEMultipart('alternative')
-    msg['From'] = formataddr(('Diljith A K', 'diljithak07@gmail.com'))
-    msg['To'] = 'diljithak23@gmail.com'
-    msg['Subject'] = "Test Subject From Dev"
+if __name__ == '__main__':
+    try:
+        # Set up the SMTP server
+        smtp = smtplib.SMTP('smtp.gmail.com', 587)
+        smtp.starttls()
+        smtp.login(email, password)
 
-    with open('automation_103/email_content.html', 'r') as f:
-        html = f.read()
-        content = MIMEText(html, 'html')
-        msg.attach(content)
+        # Create the email
+        msg = MIMEMultipart('alternative')
+        msg['From'] = formataddr(('Your Name', email))
+        msg['Subject'] = "My Email Subject"
 
-    # email_list = ['diljithak23@gmail.com', 'diljithak1@gmail.com', 'diljith.gitrepo@gmail.com', 'dilsha.ajay.marriagealbum@gmail.com']
-    smtp.sendmail('diljithak07@gmail.com', 'diljithak23@gmail.com', msg.as_string())
+        # Load email content
+        html = load_email_template(EMAIL_TEMPLATE)
+        if not html:
+            raise Exception('Failed to load email content')
 
-    smtp.quit()
-except Exception as e:
-    print(e)
+        msg.attach(MIMEText(html, 'html'))
+
+        # Send the email
+        smtp.sendmail(email, email_list, msg.as_string())
+        
+        # Quit the SMTP server
+        smtp.quit()
+        print('Emails sent successfully.')
+    except Exception as e:
+        print(f"Failed to send email: {e}")
