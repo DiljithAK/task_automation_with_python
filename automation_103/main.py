@@ -10,24 +10,22 @@ try:
 
     smtp.login('diljithak07@gmail.com', 'rdhflbmzvjfopsmd')
 
+    # message = "Hello world from Brevo SMTP Server"
+    # subject = "Your Subject Here"
+    # body = "Hello world from Brevo SMTP Server"
+    # message = f"Subject: {subject}\n\n{body}"
+
     msg = MIMEMultipart('alternative')
     msg['From'] = formataddr(('Diljith A K', 'diljithak07@gmail.com'))
     msg['To'] = 'diljithak23@gmail.com'
     msg['Subject'] = "Test Subject From Dev"
 
-    html = """
-    <html>
-    <head></head>
-    <body>
-        <p>Hello world from <b>Gmail SMTP Server</b></p>
-        <p>This is an example email with HTML content.</p>
-    </body>
-    </html>
-    """
+    with open('automation_103/email_content.html', 'r') as f:
+        html = f.read()
+        content = MIMEText(html, 'html')
+        msg.attach(content)
 
-    part2 = MIMEText(html, 'html')
-    msg.attach(part2)
-
+    # email_list = ['diljithak23@gmail.com', 'diljithak1@gmail.com', 'diljith.gitrepo@gmail.com', 'dilsha.ajay.marriagealbum@gmail.com']
     smtp.sendmail('diljithak07@gmail.com', 'diljithak23@gmail.com', msg.as_string())
 
     smtp.quit()
